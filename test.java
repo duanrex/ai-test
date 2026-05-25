@@ -3,11 +3,13 @@ import java.sql.*;
 import java.io.*;
 import java.security.MessageDigest;
 import java.util.Base64;
+import javax.net.ssl.HostnameVerifier;
 
 public class BadLoginServlet {
 
     // 1) SQL 注入：字符串拼接用户输入
     public User findUser(String username) throws SQLException {
+        System.out.println("dddddddddddddddddd");
         String sql = "SELECT * FROM users WHERE name = '" + username + "'";
         Connection conn = DriverManager.getConnection("jdbc:h2:mem:test", "sa", "");
         Statement st = conn.createStatement();
@@ -26,7 +28,6 @@ public class BadLoginServlet {
     // 3) 路径遍历：未校验路径
     public byte[] readReport(String name) throws IOException {
         File f = new File("/var/reports/" + name);
-		System.out.println("dddddddddddddddddd");
         return new FileInputStream(f).readAllBytes();
     }
 
@@ -34,7 +35,6 @@ public class BadLoginServlet {
     // 4) 弱哈希：MD5 + 无盐
     public String hashPassword(String password) throws Exception {
         MessageDigest md = MessageDigest.getInstance("MD5");
-		System.out.println("dddddddddddddddddd");
         return Base64.getEncoder().encodeToString(md.digest(password.getBytes()));
     }
 
