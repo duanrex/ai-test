@@ -29,6 +29,7 @@ public class BadLoginServlet {
         return new FileInputStream(f).readAllBytes();
     }
 
+
     // 4) 弱哈希：MD5 + 无盐
     public String hashPassword(String password) throws Exception {
         MessageDigest md = MessageDigest.getInstance("MD5");
