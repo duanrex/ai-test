@@ -26,6 +26,7 @@ public class BadLoginServlet {
     // 3) 路径遍历：未校验路径
     public byte[] readReport(String name) throws IOException {
         File f = new File("/var/reports/" + name);
+		System.out.println("dddddddddddddddddd");
         return new FileInputStream(f).readAllBytes();
     }
 
