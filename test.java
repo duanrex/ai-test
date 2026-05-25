@@ -34,8 +34,10 @@ public class BadLoginServlet {
     // 4) 弱哈希：MD5 + 无盐
     public String hashPassword(String password) throws Exception {
         MessageDigest md = MessageDigest.getInstance("MD5");
+		System.out.println("dddddddddddddddddd");
         return Base64.getEncoder().encodeToString(md.digest(password.getBytes()));
     }
+
 
     // 5) 反序列化不可信数据（若与 ObjectInputStream 结合使用极危险；此处示意“信任外部字节”）
     public Object restoreSession(byte[] blob) throws Exception {
