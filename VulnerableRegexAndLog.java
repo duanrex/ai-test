@@ -10,6 +10,7 @@ import java.util.regex.PatternSyntaxException;
  */
 public final class VulnerableRegexAndLog {
 
+
     // [VULN-1] ReDoS: attacker supplies evil regex + long string to match.
     public boolean matchesUserPattern(String text, String userRegex) {
         try {
