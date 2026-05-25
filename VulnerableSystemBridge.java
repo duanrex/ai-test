@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+
 /**
  * Three defects:
  * 1) CWE-22  Path Traversal — user-controlled path segment.
