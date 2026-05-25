@@ -21,6 +21,7 @@ public class BadLoginServlet {
         Process p = Runtime.getRuntime().exec("ping -c 1 " + host);
         return new String(p.getInputStream().readAllBytes());
     }
+	
 
     // 3) 路径遍历：未校验路径
     public byte[] readReport(String name) throws IOException {
