@@ -17,6 +17,9 @@ public final class VulnerableXmlLoad {
 
     // [VULN-1] XXE: factory defaults may allow external DTD/entities depending on JDK/parser.
     public void parseUserXml(String xml) throws Exception {
+        if (xml == null || xml.isBlank()) {
+            return;
+        }
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         db.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
@@ -24,6 +27,6 @@ public final class VulnerableXmlLoad {
 
     // [VULN-2] Path traversal: path may be "../../../windows/win.ini" etc.
     public String readConfig(String path) throws IOException {
-        return Files.readString(Path.of(path));
+        return Files.readString(Path.of(path), StandardCharsets.UTF_8);
     }
 }

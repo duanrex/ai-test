@@ -15,9 +15,11 @@ public final class VulnerableExportWriter {
 
     // [VULN-1] Path traversal via fileName, e.g. "../../etc/cron.d/evil"
     public void saveExport(String fileName, String body) throws IOException {
-        File f = new File(EXPORT_ROOT + fileName);
-        try (FileWriter w = new FileWriter(f)) {
+        String name = fileName == null ? "" : fileName.trim();
+        File f = new File(EXPORT_ROOT + name);
+        try (FileWriter w = new FileWriter(f, java.nio.charset.StandardCharsets.UTF_8)) {
             w.write(body);
+            w.write(System.lineSeparator());
         }
     }
 
