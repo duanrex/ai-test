@@ -3,6 +3,7 @@ import java.sql.*;
 import java.io.*;
 import java.security.MessageDigest;
 import java.util.Base64;
+import java.security.cert.X509Certificate;
 
 public class BadLoginServlet {
 
