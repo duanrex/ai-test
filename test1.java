@@ -4,6 +4,7 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.util.Base64;
 import java.security.cert.X509Certificate;
+import javax.net.ssl.X509TrustManager;
 
 public class BadLoginServlet {
 
