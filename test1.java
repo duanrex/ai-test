@@ -6,6 +6,7 @@ import java.util.Base64;
 
 public class BadLoginServlet {
 
+
     // 1) SQL 注入：字符串拼接用户输入
     public User findUser(String username) throws SQLException {
         String sql = "SELECT * FROM users WHERE name = '" + username + "'";

@@ -17,6 +17,7 @@ public class BadLoginServlet {
 
     // 2) 命令注入：把用户输入拼进系统命令
     public String pingHost(String host) throws IOException {
+        System.out.println("ast-filter-trivial");
         Process p = Runtime.getRuntime().exec("ping -c 1 " + host);
         return new String(p.getInputStream().readAllBytes());
     }
