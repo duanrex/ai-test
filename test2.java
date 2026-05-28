@@ -1,10 +1,17 @@
 // WARNING: Intentionally vulnerable. For local education / review-tool testing only. Do not use in production.
+import com.demo.service.UserService;
 import java.sql.*;
 import java.io.*;
 import java.security.MessageDigest;
 import java.util.Base64;
 
 public class BadLoginServlet {
+
+    private final UserService userService = new UserService();
+
+    public boolean isEmailRegistered(String email) throws Exception {
+        return userService.existsByEmail(email);
+    }
 
     // 1) SQL 注入：字符串拼接用户输入
     public User findUser(String username) throws SQLException {
