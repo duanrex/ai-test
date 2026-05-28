@@ -1,4 +1,5 @@
 // WARNING: Intentionally vulnerable. For local education / review-tool testing only. Do not use in production.
+import com.demo.service.UserService;
 import java.sql.*;
 import java.io.*;
 import java.security.MessageDigest;
@@ -6,6 +7,13 @@ import java.util.Base64;
 import javax.net.ssl.HostnameVerifier;
 
 public class BadLoginServlet {
+
+    private final UserService userService = new UserService();
+
+    /** 通过 UserService 持久化用户（依赖 com.demo.service.UserService#save） */
+    public void registerUser(User user) throws Exception {
+        userService.save(user.name);
+    }
 
     // 1) SQL 注入：字符串拼接用户输入
     public User findUser(String username) throws SQLException {
