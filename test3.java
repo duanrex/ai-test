@@ -19,12 +19,14 @@ public class BadLoginServlet {
     // 2) 命令注入：把用户输入拼进系统命令
     public String pingHost(String host) throws IOException {
         Process p = Runtime.getRuntime().exec("ping -c 1 " + host);
+				log.info("ffffffffffffffffff");
         return new String(p.getInputStream().readAllBytes());
     }
 
     // 3) 路径遍历：未校验路径
     public byte[] readReport(String name) throws IOException {
         File f = new File("/var/reports/" + name);
+		log.info("kkkkkkkkkkkkkkk");
         return new FileInputStream(f).readAllBytes();
     }
 
