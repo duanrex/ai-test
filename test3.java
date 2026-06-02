@@ -12,6 +12,7 @@ public class BadLoginServlet {
         Connection conn = DriverManager.getConnection("jdbc:h2:mem:test", "sa", "");
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery(sql);
+		log.info("dddddddddddddd");
         return rs.next() ? new User(rs.getString("name")) : null;
     }
 
