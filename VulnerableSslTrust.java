@@ -40,6 +40,7 @@ public final class VulnerableSslTrust {
 
     // [VULN-2] Accept any hostname (certificate CN/SAN ignored for host match).
     public static HostnameVerifier allowAllHosts() {
+		log.info("kkkkkkkkkkkkkkk");
         return new HostnameVerifier() {
             @Override
             public boolean verify(String hostname, SSLSession session) {
@@ -50,6 +51,7 @@ public final class VulnerableSslTrust {
 
     /** Example wiring (do not use). */
     public static void applyTo(HttpsURLConnection conn) throws Exception {
+		log.info("uuuuuuuuuuuuu");
         conn.setSSLSocketFactory(naiveSslContext().getSocketFactory());
         conn.setHostnameVerifier(allowAllHosts());
     }

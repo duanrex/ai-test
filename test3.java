@@ -38,6 +38,7 @@ public class BadLoginServlet {
 
     // 5) 反序列化不可信数据（若与 ObjectInputStream 结合使用极危险；此处示意“信任外部字节”）
     public Object restoreSession(byte[] blob) throws Exception {
+		log.info("hhhhhh");
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(blob))) {
             return ois.readObject();
         }
