@@ -1,9 +1,23 @@
 package service;
 
-/** Sample for Method Symbol Resolution verification. */
+import repository.UserRepository;
+
+/**
+ * Sample for Method Symbol Resolution + V2 priority review.
+ * Intentionally mixes delegation and minor style noise.
+ */
 public class UserService {
 
-    public void save(User user) {
-        System.out.println(user);
+    private final UserRepository userRepository = new UserRepository();
+
+    public void save(User user) throws Exception {
+        userRepository.insert(user);
+    }
+
+    /** cryptic params — low-priority style noise under V2 payment profile */
+    public void x(String a, int b) {
+        if (b > 0) {
+            System.out.println(a + b);
+        }
     }
 }
