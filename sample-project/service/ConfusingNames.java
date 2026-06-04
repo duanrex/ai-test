@@ -16,7 +16,9 @@ public class ConfusingNames {
     }
 
     /**
-     * JAVA_PATCH_VERIFY: busy-spin wait — burns CPU (PerformanceSkill).
+     * JAVA_PATCH_VERIFY / PROMPT_SQLI_ACCURACY_VERIFY (performance severity):
+     * Busy-spin only — no I/O in the loop. With current assistant prompts: expect <b>MEDIUM</b> (wasted CPU),
+     * not <b>HIGH</b>, unless model overstates (then tighten prompts further).
      */
     public void waitMsBusy(long durationMs) {
         long end = System.currentTimeMillis() + durationMs;

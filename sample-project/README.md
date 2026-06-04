@@ -4,13 +4,14 @@
 
 | 路径 | 作用 |
 |------|------|
-| `service/UserService.java` | `save(User)`、`UserRepository` 委托；风格噪声方法 `x`；**MULTI_SKILL_VERIFY**：`buildAuditTrail`；**JAVA_PATCH_VERIFY**：`publishTagsWithPause`、`logLookupHint` |
+| `service/UserService.java` | `save(User)`、`UserRepository` 委托；风格噪声方法 `x`；**MULTI_SKILL_VERIFY**：`buildAuditTrail`；**JAVA_PATCH_VERIFY**：`publishTagsWithPause`、`logLookupHint`（仅 println，**非 SQL**；**PROMPT_SQLI_ACCURACY_VERIFY**） |
 | `service/User.java` | 占位类型；**JAVA_PATCH_VERIFY**：`sameName`（{@code ==} 比较字符串） |
-| `service/ConfusingNames.java` | `saveUser` / `saveAll` / `saveConfig` — 验证查找 `save` 时**不误命中**；**JAVA_PATCH_VERIFY**：`waitMsBusy`（忙等） |
+| `service/ConfusingNames.java` | `saveUser` / `saveAll` / `saveConfig` — 验证查找 `save` 时**不误命中**；**JAVA_PATCH_VERIFY**：`waitMsBusy`（忙等；**PROMPT_SQLI_ACCURACY_VERIFY**：预期性能多为 MEDIUM） |
 | `repository/UserRepository.java` | `insert` / `existsWithCredentials` / `existsByName` — **拼接 SQL**；**MULTI_SKILL_VERIFY**：`anyNameExists`（N+1）；**JAVA_PATCH_VERIFY**：`listUserNamesOrdered`（ORDER BY 拼接） |
 | `auth/AuthService.java` | `login`、跨文件仓库；**MULTI_SKILL_VERIFY**：密钥 / 路径 / URL / `warmCacheBadly` / `legacyCheck`；**MERGE_NORMALIZE_VERIFY** 注释；**JAVA_PATCH_VERIFY**：`deleteUsersByRole` |
 | `docs/REVIEW_MERGE_VERIFY.md` | **验收说明**（当前 **`.md` 已被 chunker 忽略**，不送审；文内描述如何看日志与 Java 靶子） |
 | `../DOC_SKIP_VERIFY.md`（仓库根，与 `sample-project/` 同级） | 用于在日志里确认 **`[skip] no Qwen: … documentation file (ignored)`** |
+| `../PROMPT_SQLI_ACCURACY_VERIFY.md`（仓库根） | **SQLi 术语 / 忙等严重度** 验收清单（`.md` 同样被 chunker 忽略） |
 
 仓库根目录 **`MULTI_SKILL_VERIFY.md`**：多 Skill 流水线 + **文档跳过 / 合并** 验收步骤。  
 **`sample-project/docs/REVIEW_MERGE_VERIFY.md`**：与上同步的说明（**md 本身不再产生 AI chunk**）。

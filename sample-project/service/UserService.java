@@ -46,7 +46,10 @@ public class UserService {
     }
 
     /**
-     * JAVA_PATCH_VERIFY: LIKE with raw user fragment (SecuritySkill; calls repo pattern).
+     * JAVA_PATCH_VERIFY / PROMPT_SQLI_ACCURACY_VERIFY:
+     * Only System.out.println — the string is not executed as SQL.
+     * With current ai-review-assistant prompts: expect no "SQL injection" label;
+     * if flagged at all, wording should be log exposure / log injection / sensitive data in logs (not SQLi).
      */
     public void logLookupHint(String userFragment) {
         System.out.println("lookup hint LIKE % " + userFragment + " %");

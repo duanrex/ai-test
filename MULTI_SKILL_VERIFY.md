@@ -8,11 +8,11 @@
 |------|------|------|
 | Security | `auth/AuthService.java` | 硬编码密钥、路径拼接、`URL` SSRF 面；**JAVA_PATCH_VERIFY**：`deleteUsersByRole` |
 | Security | `repository/UserRepository.java` | 拼接 SQL + 凭证；**JAVA_PATCH_VERIFY**：`listUserNamesOrdered`（ORDER BY 拼接） |
-| Security | `service/UserService.java` | **JAVA_PATCH_VERIFY**：`logLookupHint`（LIKE 片段日志） |
+| Security / logs | `service/UserService.java` | **JAVA_PATCH_VERIFY**：`logLookupHint` — 仅 `println`，**不执行 SQL**；助手应 **不误报 SQL 注入**（见 `PROMPT_SQLI_ACCURACY_VERIFY.md`） |
 | Performance | `repository/UserRepository.java` | `anyNameExists` 循环里多次 `existsByName`（N+1） |
 | Performance | `auth/AuthService.java` | `warmCacheBadly` 大量循环调库 |
 | Performance | `service/UserService.java` | `buildAuditTrail` 双重循环 + 字符串拼接；**JAVA_PATCH_VERIFY**：`publishTagsWithPause`（循环 + sleep） |
-| Performance | `service/ConfusingNames.java` | **JAVA_PATCH_VERIFY**：`waitMsBusy`（忙等） |
+| Performance | `service/ConfusingNames.java` | **JAVA_PATCH_VERIFY**：`waitMsBusy`（纯 CPU 忙等；预期多为 **MEDIUM**，非 **HIGH**） |
 | General / Style | `service/UserService.java` | 方法 `x` 命名差、可维护性 |
 | General / Correctness | `service/User.java` | **JAVA_PATCH_VERIFY**：`sameName` 用 `==` 比字符串 |
 
@@ -40,3 +40,15 @@
 2. **助手日志**：对上述 `.md` 应出现 **`[skip] no Qwen: … — documentation file (ignored)`**（文档 **不进** 多 Skill 流水线）。  
 3. **PR 评论**：只应反映 **`.java` chunk** 的合并结果；**Issues** 里 SQL/SSRF/N+1 等 **`file`** 应为对应 **`.java`**。  
 4. **Summary**：多 Java chunk 合并时，不应再出现与 **HIGH** 明显矛盾的「纯文档无问题」套话（依赖最新 `merge.py`）。
+
+## PROMPT_SQLI_ACCURACY_VERIFY（`app/prompt.py` 术语收紧）
+
+部署含 **`_SQL_INJECTION_ACCURACY`**、合并阶段「勿把仅日志当 SQLi」规则的 **ai-review-assistant** 后，用本仓库 PR 再跑一轮 webhook，在 **`UserService.logLookupHint`** 上验收：
+
+| 检查项 | 预期 |
+|--------|------|
+| `logLookupHint` | **不得**在 issues/summary 中出现 **SQL injection** / **SQL 注入**（因无 `Statement`/`execute*` 路径） |
+| 若仍提 `logLookupHint` | 应用 **日志敏感信息**、**log injection** 等表述，且严重度通常 ≤ **MEDIUM** |
+| `ConfusingNames.waitMsBusy` | 性能类多为 **MEDIUM**；若仍为 **HIGH** 可再调模型或提示词 |
+
+根目录 **`PROMPT_SQLI_ACCURACY_VERIFY.md`** 为同主题简短清单（改该文件可触发文档 skip 日志，与 Java 同 PR 即可）。

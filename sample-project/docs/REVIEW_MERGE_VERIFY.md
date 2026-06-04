@@ -22,7 +22,7 @@
 |------|------|
 | `repository/UserRepository.java` | 拼接 SQL、`anyNameExists` N+1、`listUserNamesOrdered`（ORDER BY 拼接） |
 | `auth/AuthService.java` | 硬编码密钥、路径拼接读文件、`pingPartner` URL、`warmCacheBadly`、`deleteUsersByRole` |
-| `service/UserService.java` | `publishTagsWithPause`、`logLookupHint` 等 **JAVA_PATCH_VERIFY** |
-| `service/User.java` / `service/ConfusingNames.java` | **JAVA_PATCH_VERIFY**：`sameName`、`waitMsBusy` |
+| `service/UserService.java` | `publishTagsWithPause`、`logLookupHint`（**仅控制台**，不执行 SQL — 用于 **PROMPT_SQLI_ACCURACY_VERIFY**） |
+| `service/User.java` / `service/ConfusingNames.java` | **JAVA_PATCH_VERIFY**：`sameName`、`waitMsBusy`（**PROMPT_SQLI_ACCURACY_VERIFY**：忙等预期多为 MEDIUM） |
 
 **Tag:** `DOC_SKIP_VERIFY`
