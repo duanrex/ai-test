@@ -13,10 +13,28 @@ import repository.UserRepository;
  */
 public class AuthService {
 
+    /** MULTI_SKILL_VERIFY: hardcoded secret — SecuritySkill / Summary merge */
+    private static final String INTERNAL_API_KEY = "msk-verify-secret-do-not-ship";
+
     private final UserRepository userRepository = new UserRepository();
 
     public boolean login(String username, String password) throws Exception {
         return userRepository.existsWithCredentials(username, password);
+    }
+
+    /** MULTI_SKILL_VERIFY: path traversal pattern — SecuritySkill */
+    public byte[] loadExportByName(String name) throws Exception {
+        java.io.File f = new java.io.File("/var/exports/" + name);
+        try (java.io.FileInputStream in = new java.io.FileInputStream(f)) {
+            return in.readAllBytes();
+        }
+    }
+
+    /** MULTI_SKILL_VERIFY: SSRF-style URL from user input — SecuritySkill */
+    public void pingPartner(String urlString) throws Exception {
+        try (java.io.InputStream in = new java.net.URL(urlString).openStream()) {
+            in.readAllBytes();
+        }
     }
 
     /**

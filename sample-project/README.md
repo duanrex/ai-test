@@ -4,11 +4,13 @@
 
 | 路径 | 作用 |
 |------|------|
-| `service/UserService.java` | `save(User)`、`UserRepository` 委托；含刻意「风格噪声」方法 |
+| `service/UserService.java` | `save(User)`、`UserRepository` 委托；风格噪声方法 `x`；**MULTI_SKILL_VERIFY**：`buildAuditTrail` 双重循环与字符串拼接（性能） |
 | `service/User.java` | 占位类型 |
 | `service/ConfusingNames.java` | `saveUser` / `saveAll` / `saveConfig` — 验证查找 `save` 时**不误命中** |
-| `repository/UserRepository.java` | `insert` / `existsWithCredentials` / `existsByName` — **拼接 SQL**（安全 + 跨文件检索） |
-| `auth/AuthService.java` | `login` → `UserRepository`；`warmCacheBadly`（性能）；`legacyCheck`（内联 SQL） |
+| `repository/UserRepository.java` | `insert` / `existsWithCredentials` / `existsByName` — **拼接 SQL**；**MULTI_SKILL_VERIFY**：`anyNameExists`（N+1） |
+| `auth/AuthService.java` | `login`、跨文件仓库；**MULTI_SKILL_VERIFY**：硬编码密钥、路径拼接读文件、`URL` 打开用户输入（SSRF 面）、`warmCacheBadly` / `legacyCheck` |
+
+仓库根目录 **`MULTI_SKILL_VERIFY.md`**：如何用本仓库开一个 PR 验证 **ai-review-assistant** 的 **Review → Security → Performance → Summary** 四段流水线与日志关键字。
 
 仓库根目录 `test2.java`：极简「坏命名 / 长变量」片段，便于 **`RULE_PROFILE=frontend`** 时观察模型更偏 **style**、且 **import/method retrieval 关闭** 下的输出差异。
 
