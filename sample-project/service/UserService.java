@@ -20,4 +20,18 @@ public class UserService {
             System.out.println(a + b);
         }
     }
+
+    /**
+     * MULTI_SKILL_VERIFY: heavy loop + string churn (PerformanceSkill).
+     * General review may also flag complexity / readability.
+     */
+    public String buildAuditTrail(java.util.List<String> events) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < events.size(); i++) {
+            for (int j = 0; j < 50; j++) {
+                sb.append(events.get(i)).append(':').append(j).append('|');
+            }
+        }
+        return sb.toString();
+    }
 }

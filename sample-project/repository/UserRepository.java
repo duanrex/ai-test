@@ -43,4 +43,16 @@ public class UserRepository {
             return rs.next();
         }
     }
+
+    /**
+     * MULTI_SKILL_VERIFY: N+1 — one DB round-trip per list element (PerformanceSkill).
+     */
+    public boolean anyNameExists(java.util.List<String> names) throws Exception {
+        for (String n : names) {
+            if (existsByName(n)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
