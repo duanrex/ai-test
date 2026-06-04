@@ -4,15 +4,17 @@
 
 | 路径 | 作用 |
 |------|------|
-| `service/UserService.java` | `save(User)`、`UserRepository` 委托；风格噪声方法 `x`；**MULTI_SKILL_VERIFY**：`buildAuditTrail` 双重循环与字符串拼接（性能） |
-| `service/User.java` | 占位类型 |
-| `service/ConfusingNames.java` | `saveUser` / `saveAll` / `saveConfig` — 验证查找 `save` 时**不误命中** |
-| `repository/UserRepository.java` | `insert` / `existsWithCredentials` / `existsByName` — **拼接 SQL**；**MULTI_SKILL_VERIFY**：`anyNameExists`（N+1） |
-| `auth/AuthService.java` | `login`、跨文件仓库；**MULTI_SKILL_VERIFY**：硬编码密钥、路径拼接读文件、`URL` 打开用户输入（SSRF 面）、`warmCacheBadly` / `legacyCheck`；**MERGE_NORMALIZE_VERIFY** 注释 |
-| `docs/REVIEW_MERGE_VERIFY.md` | **合并验收说明**：故意与 Java 分 chunk，用于核对 `file` 纠正与 summary 去套话 |
+| `service/UserService.java` | `save(User)`、`UserRepository` 委托；风格噪声方法 `x`；**MULTI_SKILL_VERIFY**：`buildAuditTrail`；**JAVA_PATCH_VERIFY**：`publishTagsWithPause`、`logLookupHint`（仅 println，**非 SQL**；**PROMPT_SQLI_ACCURACY_VERIFY**） |
+| `service/User.java` | 占位类型；**JAVA_PATCH_VERIFY**：`sameName`（{@code ==} 比较字符串） |
+| `service/ConfusingNames.java` | `saveUser` / `saveAll` / `saveConfig` — 验证查找 `save` 时**不误命中**；**JAVA_PATCH_VERIFY**：`waitMsBusy`（忙等；**PROMPT_SQLI_ACCURACY_VERIFY**：预期性能多为 MEDIUM） |
+| `repository/UserRepository.java` | `insert` / `existsWithCredentials` / `existsByName` — **拼接 SQL**；**MULTI_SKILL_VERIFY**：`anyNameExists`（N+1）；**JAVA_PATCH_VERIFY**：`listUserNamesOrdered`（ORDER BY 拼接） |
+| `auth/AuthService.java` | `login`、跨文件仓库；**MULTI_SKILL_VERIFY**：密钥 / 路径 / URL / `warmCacheBadly` / `legacyCheck`；**MERGE_NORMALIZE_VERIFY** 注释；**JAVA_PATCH_VERIFY**：`deleteUsersByRole` |
+| `docs/REVIEW_MERGE_VERIFY.md` | **验收说明**（当前 **`.md` 已被 chunker 忽略**，不送审；文内描述如何看日志与 Java 靶子） |
+| `../DOC_SKIP_VERIFY.md`（仓库根，与 `sample-project/` 同级） | 用于在日志里确认 **`[skip] no Qwen: … documentation file (ignored)`** |
+| `../PROMPT_SQLI_ACCURACY_VERIFY.md`（仓库根） | **SQLi 术语 / 忙等严重度** 验收清单（`.md` 同样被 chunker 忽略） |
 
-仓库根目录 **`MULTI_SKILL_VERIFY.md`**：多 Skill 流水线。  
-**`sample-project/docs/REVIEW_MERGE_VERIFY.md`**：合并后 **`file` 纠正** 与 **summary 去文档套话** 的验收说明（与 Java 分 chunk 时对照 PR 评论）。
+仓库根目录 **`MULTI_SKILL_VERIFY.md`**：多 Skill 流水线 + **文档跳过 / 合并** 验收步骤。  
+**`sample-project/docs/REVIEW_MERGE_VERIFY.md`**：与上同步的说明（**md 本身不再产生 AI chunk**）。
 
 仓库根目录 `test2.java`：极简「坏命名 / 长变量」片段，便于 **`RULE_PROFILE=frontend`** 时观察模型更偏 **style**、且 **import/method retrieval 关闭** 下的输出差异。
 
@@ -24,11 +26,10 @@
 2. **`frontend`**  
    在助手侧设置环境变量 **`RULE_PROFILE=frontend`** 后重启，再跑同一 PR：预期更关注 **style**，且检索关闭、token 更省。
 
-## 合并后验收（issue_normalize + merge）
+## 合并后验收（issue_normalize + merge）与文档忽略
 
-部署含 **merge 去套话 / `normalize_merged_review`** 的版本后，同一 PR 应满足：
-
-- **`Issues Found`**：`repository/UserRepository.java`、`auth/AuthService.java` 等问题行的 **`file`** 为对应 **`.java`**，不应长期挂在 **`REVIEW_MERGE_VERIFY.md` / `README.md`** 上（除非 message 仅描述文档本身）。
-- **`Summary`**：不应再出现「纯文档 chunk 无问题」与「Java HIGH 漏洞」**自相矛盾**的长拼贴（见 `sample-project/docs/REVIEW_MERGE_VERIFY.md`）。
+- **`.md` 等**：由助手 **chunker 直接跳过**；PR 里改 README / 本目录下 md 时，日志里应有 **`[skip] no Qwen: … documentation file (ignored)`**，且 **不会** 为这些文件跑多 Skill。  
+- **仅 Java chunk 合并时**：`Issues` 里 **`file`** 应为 **`*.java`**；若历史/模型仍写出 doc `file`，**`normalize_merged_review`** 会按正文里的源码路径纠正。  
+- **`Summary`**：多 Java chunk 时，**`merge`** 会去掉与已有 issues 矛盾的文档式套话（见 `docs/REVIEW_MERGE_VERIFY.md`）。
 
 验证命令见仓库根目录 `docs/METHOD_RESOLUTION_VERIFICATION.md`（若存在）。

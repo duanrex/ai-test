@@ -34,4 +34,24 @@ public class UserService {
         }
         return sb.toString();
     }
+
+    /**
+     * JAVA_PATCH_VERIFY: tight loop + Thread.sleep per item (latency / perf).
+     */
+    public void publishTagsWithPause(java.util.List<String> tags) throws InterruptedException {
+        for (String t : tags) {
+            Thread.sleep(2);
+            System.out.println("tag=" + t);
+        }
+    }
+
+    /**
+     * JAVA_PATCH_VERIFY / PROMPT_SQLI_ACCURACY_VERIFY:
+     * Only System.out.println — the string is not executed as SQL.
+     * With current ai-review-assistant prompts: expect no "SQL injection" label;
+     * if flagged at all, wording should be log exposure / log injection / sensitive data in logs (not SQLi).
+     */
+    public void logLookupHint(String userFragment) {
+        System.out.println("lookup hint LIKE % " + userFragment + " %");
+    }
 }

@@ -56,4 +56,20 @@ public class UserRepository {
         }
         return false;
     }
+
+    /**
+     * JAVA_PATCH_VERIFY: dynamic ORDER BY fragment (SQL injection style).
+     */
+    public java.util.List<String> listUserNamesOrdered(String orderColumn) throws Exception {
+        String sql = "SELECT name FROM users ORDER BY " + orderColumn;
+        Connection conn = DriverManager.getConnection("jdbc:h2:mem:repo", "sa", "");
+        java.util.ArrayList<String> out = new java.util.ArrayList<>();
+        try (Statement st = conn.createStatement();
+                ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                out.add(rs.getString(1));
+            }
+        }
+        return out;
+    }
 }

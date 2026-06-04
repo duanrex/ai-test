@@ -14,6 +14,7 @@ import repository.UserRepository;
 public class AuthService {
 
     // MERGE_NORMALIZE_VERIFY: doc chunk + java chunk merge / file rewrite smoke
+    // DOC_SKIP_VERIFY: md files skipped in chunker; this Java file still reviewed
 
     /** MULTI_SKILL_VERIFY: hardcoded secret — SecuritySkill / Summary merge */
     private static final String INTERNAL_API_KEY = "msk-verify-secret-do-not-ship";
@@ -57,6 +58,17 @@ public class AuthService {
         try (Statement st = conn.createStatement();
                 ResultSet rs = st.executeQuery(sql)) {
             return rs.next();
+        }
+    }
+
+    /**
+     * JAVA_PATCH_VERIFY: role-based delete with string-concat SQL (SecuritySkill).
+     */
+    public int deleteUsersByRole(String role) throws Exception {
+        String sql = "DELETE FROM users WHERE role='" + role + "'";
+        Connection conn = DriverManager.getConnection("jdbc:h2:mem:auth", "sa", "");
+        try (Statement st = conn.createStatement()) {
+            return st.executeUpdate(sql);
         }
     }
 }
