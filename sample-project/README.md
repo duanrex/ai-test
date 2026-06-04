@@ -8,9 +8,11 @@
 | `service/User.java` | 占位类型 |
 | `service/ConfusingNames.java` | `saveUser` / `saveAll` / `saveConfig` — 验证查找 `save` 时**不误命中** |
 | `repository/UserRepository.java` | `insert` / `existsWithCredentials` / `existsByName` — **拼接 SQL**；**MULTI_SKILL_VERIFY**：`anyNameExists`（N+1） |
-| `auth/AuthService.java` | `login`、跨文件仓库；**MULTI_SKILL_VERIFY**：硬编码密钥、路径拼接读文件、`URL` 打开用户输入（SSRF 面）、`warmCacheBadly` / `legacyCheck` |
+| `auth/AuthService.java` | `login`、跨文件仓库；**MULTI_SKILL_VERIFY**：硬编码密钥、路径拼接读文件、`URL` 打开用户输入（SSRF 面）、`warmCacheBadly` / `legacyCheck`；**MERGE_NORMALIZE_VERIFY** 注释 |
+| `docs/REVIEW_MERGE_VERIFY.md` | **合并验收说明**：故意与 Java 分 chunk，用于核对 `file` 纠正与 summary 去套话 |
 
-仓库根目录 **`MULTI_SKILL_VERIFY.md`**：如何用本仓库开一个 PR 验证 **ai-review-assistant** 的 **Review → Security → Performance → Summary** 四段流水线与日志关键字。
+仓库根目录 **`MULTI_SKILL_VERIFY.md`**：多 Skill 流水线。  
+**`sample-project/docs/REVIEW_MERGE_VERIFY.md`**：合并后 **`file` 纠正** 与 **summary 去文档套话** 的验收说明（与 Java 分 chunk 时对照 PR 评论）。
 
 仓库根目录 `test2.java`：极简「坏命名 / 长变量」片段，便于 **`RULE_PROFILE=frontend`** 时观察模型更偏 **style**、且 **import/method retrieval 关闭** 下的输出差异。
 
@@ -21,5 +23,12 @@
 
 2. **`frontend`**  
    在助手侧设置环境变量 **`RULE_PROFILE=frontend`** 后重启，再跑同一 PR：预期更关注 **style**，且检索关闭、token 更省。
+
+## 合并后验收（issue_normalize + merge）
+
+部署含 **merge 去套话 / `normalize_merged_review`** 的版本后，同一 PR 应满足：
+
+- **`Issues Found`**：`repository/UserRepository.java`、`auth/AuthService.java` 等问题行的 **`file`** 为对应 **`.java`**，不应长期挂在 **`REVIEW_MERGE_VERIFY.md` / `README.md`** 上（除非 message 仅描述文档本身）。
+- **`Summary`**：不应再出现「纯文档 chunk 无问题」与「Java HIGH 漏洞」**自相矛盾**的长拼贴（见 `sample-project/docs/REVIEW_MERGE_VERIFY.md`）。
 
 验证命令见仓库根目录 `docs/METHOD_RESOLUTION_VERIFICATION.md`（若存在）。
