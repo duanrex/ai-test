@@ -30,3 +30,9 @@
 ## 仅本地 smoke（不连 GitHub）
 
 在 **ai-review-assistant** 仓库根目录，用与 CI 相同的单测/脚本无法替代完整四段模型调用；要验证端到端仍需一次真实或 mock 的 provider 调用。
+
+## 合并修复专项（`MERGE_NORMALIZE_VERIFY`）
+
+1. 开一个 PR，**同时包含** `sample-project/docs/REVIEW_MERGE_VERIFY.md` 与若干 **`.java`** 改动（本仓库已具备）。  
+2. 跑完 webhook 后打开 **Issues Found**：确认 SQL/SSRF/N+1 等条目的 **`file`** 指向 **`repository/UserRepository.java`** / **`auth/AuthService.java`** 等源码路径。  
+3. 阅读 **Summary**：不应再出现「仅文档、无执行代码、无严重问题」与后面 **HIGH 安全问题** 并排矛盾（若仍出现，说明线上未部署最新 `merge.py` / `issue_normalize.py`）。

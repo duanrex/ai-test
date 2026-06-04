@@ -46,6 +46,7 @@ public class UserRepository {
 
     /**
      * MULTI_SKILL_VERIFY: N+1 — one DB round-trip per list element (PerformanceSkill).
+     * MERGE_NORMALIZE_VERIFY: if issue file wrongly set to a .md path, message should cite repository/UserRepository.java for rewrite.
      */
     public boolean anyNameExists(java.util.List<String> names) throws Exception {
         for (String n : names) {

@@ -13,6 +13,8 @@ import repository.UserRepository;
  */
 public class AuthService {
 
+    // MERGE_NORMALIZE_VERIFY: doc chunk + java chunk merge / file rewrite smoke
+
     /** MULTI_SKILL_VERIFY: hardcoded secret — SecuritySkill / Summary merge */
     private static final String INTERNAL_API_KEY = "msk-verify-secret-do-not-ship";
 
