@@ -6,4 +6,11 @@ public class User {
     public User(String name) {
         this.name = name;
     }
+
+    /**
+     * JAVA_PATCH_VERIFY: uses {@code ==} on interned-looking strings — wrong for value equality / i18n.
+     */
+    public boolean sameName(User other) {
+        return this.name == other.name;
+    }
 }

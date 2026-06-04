@@ -14,4 +14,14 @@ public class ConfusingNames {
 
     public void saveConfig(String key) {
     }
+
+    /**
+     * JAVA_PATCH_VERIFY: busy-spin wait — burns CPU (PerformanceSkill).
+     */
+    public void waitMsBusy(long durationMs) {
+        long end = System.currentTimeMillis() + durationMs;
+        while (System.currentTimeMillis() < end) {
+            // spin
+        }
+    }
 }

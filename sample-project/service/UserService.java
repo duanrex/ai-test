@@ -34,4 +34,21 @@ public class UserService {
         }
         return sb.toString();
     }
+
+    /**
+     * JAVA_PATCH_VERIFY: tight loop + Thread.sleep per item (latency / perf).
+     */
+    public void publishTagsWithPause(java.util.List<String> tags) throws InterruptedException {
+        for (String t : tags) {
+            Thread.sleep(2);
+            System.out.println("tag=" + t);
+        }
+    }
+
+    /**
+     * JAVA_PATCH_VERIFY: LIKE with raw user fragment (SecuritySkill; calls repo pattern).
+     */
+    public void logLookupHint(String userFragment) {
+        System.out.println("lookup hint LIKE % " + userFragment + " %");
+    }
 }

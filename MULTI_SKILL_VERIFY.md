@@ -6,12 +6,15 @@
 
 | 区域 | 文件 | 意图 |
 |------|------|------|
-| Security | `auth/AuthService.java` | 硬编码密钥、`/var/exports/` + 用户输入路径、`URL(user).openStream()`（SSRF 面） |
-| Security | `repository/UserRepository.java` | 既有拼接 SQL + 凭证 |
+| Security | `auth/AuthService.java` | 硬编码密钥、路径拼接、`URL` SSRF 面；**JAVA_PATCH_VERIFY**：`deleteUsersByRole` |
+| Security | `repository/UserRepository.java` | 拼接 SQL + 凭证；**JAVA_PATCH_VERIFY**：`listUserNamesOrdered`（ORDER BY 拼接） |
+| Security | `service/UserService.java` | **JAVA_PATCH_VERIFY**：`logLookupHint`（LIKE 片段日志） |
 | Performance | `repository/UserRepository.java` | `anyNameExists` 循环里多次 `existsByName`（N+1） |
 | Performance | `auth/AuthService.java` | `warmCacheBadly` 大量循环调库 |
-| Performance | `service/UserService.java` | `buildAuditTrail` 双重循环 + 字符串拼接 |
+| Performance | `service/UserService.java` | `buildAuditTrail` 双重循环 + 字符串拼接；**JAVA_PATCH_VERIFY**：`publishTagsWithPause`（循环 + sleep） |
+| Performance | `service/ConfusingNames.java` | **JAVA_PATCH_VERIFY**：`waitMsBusy`（忙等） |
 | General / Style | `service/UserService.java` | 方法 `x` 命名差、可维护性 |
+| General / Correctness | `service/User.java` | **JAVA_PATCH_VERIFY**：`sameName` 用 `==` 比字符串 |
 
 ## 怎么跑通
 
@@ -31,8 +34,9 @@
 
 在 **ai-review-assistant** 仓库根目录，用与 CI 相同的单测/脚本无法替代完整四段模型调用；要验证端到端仍需一次真实或 mock 的 provider 调用。
 
-## 合并修复专项（`MERGE_NORMALIZE_VERIFY`）
+## 文档忽略 + 合并（`DOC_SKIP_VERIFY` / `MERGE_NORMALIZE_VERIFY`）
 
-1. 开一个 PR，**同时包含** `sample-project/docs/REVIEW_MERGE_VERIFY.md` 与若干 **`.java`** 改动（本仓库已具备）。  
-2. 跑完 webhook 后打开 **Issues Found**：确认 SQL/SSRF/N+1 等条目的 **`file`** 指向 **`repository/UserRepository.java`** / **`auth/AuthService.java`** 等源码路径。  
-3. 阅读 **Summary**：不应再出现「仅文档、无执行代码、无严重问题」与后面 **HIGH 安全问题** 并排矛盾（若仍出现，说明线上未部署最新 `merge.py` / `issue_normalize.py`）。
+1. 开一个 PR，**同时改** 仓库根 `DOC_SKIP_VERIFY.md`、`sample-project/docs/REVIEW_MERGE_VERIFY.md` 与若干 **`sample-project/**/*.java`**。  
+2. **助手日志**：对上述 `.md` 应出现 **`[skip] no Qwen: … — documentation file (ignored)`**（文档 **不进** 多 Skill 流水线）。  
+3. **PR 评论**：只应反映 **`.java` chunk** 的合并结果；**Issues** 里 SQL/SSRF/N+1 等 **`file`** 应为对应 **`.java`**。  
+4. **Summary**：多 Java chunk 合并时，不应再出现与 **HIGH** 明显矛盾的「纯文档无问题」套话（依赖最新 `merge.py`）。

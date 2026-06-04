@@ -1,22 +1,28 @@
-# Merge / normalize 验证说明（故意与 Java 缺陷分文件）
+# 文档跳过 + 合并逻辑（验收说明）
 
-本 Markdown 在 PR 里通常会作为**单独 chunk** 被评审。模型有时会把「下面提到的 Java 问题」错误地记在 **本 `.md` 文件** 的 `file` 字段上。
+## 当前行为（ai-review-assistant `chunker`）
 
-**部署了 `issue_normalize` + `merge_reviews` 去重后，预期：**
+**`.md` / `.txt` / `.rst` / `.adoc` 等文档后缀** 在 **`chunk_diff_files`** 阶段会被 **整文件忽略**：不生成 chunk、**不调用** Review / Security / Performance / Summary 流水线。
 
-1. **`Issues Found` 里的 `file`**  
-   若 `message` 里写明了真实路径（例如 `repository/UserRepository.java`、`auth/AuthService.java`），则合并后 **`file` 应被改成该 `.java` 路径**，而不是长期停留在 `*.md`。
+因此：本文件即使出现在 PR diff 里，也 **不会** 再产生「文档 chunk 把 `file` 标成 README」之类的问题。
 
-2. **`Summary`**  
-   若某个 chunk 的 summary 写「仅是文档、无执行代码、无严重问题」，而其它 chunk 对 **`.java`** 报了 HIGH，则合并后的总 summary **不应再保留那段与 HIGH 矛盾的文档套话**（`_coalesce_summaries`）。
+**验证方式：** 部署最新助手后，对包含本文件的 PR 跑 webhook，在助手控制台应看到类似：
 
-3. **仍应出现的真实风险（在源码里，不在本文）**  
+```text
+[skip] no Qwen: sample-project/docs/REVIEW_MERGE_VERIFY.md — documentation file (ignored)
+```
+
+## 仍应用 `issue_normalize` / `merge` 的场景
+
+当 **其它路径**（例如模型仍写出 `file` 为某 `.md`）与 **message 中引用的 `*.java`** 不一致时，**合并后** 仍会尝试把 `file` 改回正文里的源码路径；**多 chunk summary** 仍会去掉与已有 issues 矛盾的文档套话段落。
+
+## 刻意留作靶子的 Java（实际被审）
 
 | 路径 | 说明 |
 |------|------|
-| `repository/UserRepository.java` | 拼接 SQL、`anyNameExists` N+1 |
-| `auth/AuthService.java` | 硬编码密钥、`loadExportByName` 路径拼接、`pingPartner` URL |
+| `repository/UserRepository.java` | 拼接 SQL、`anyNameExists` N+1、`listUserNamesOrdered`（ORDER BY 拼接） |
+| `auth/AuthService.java` | 硬编码密钥、路径拼接读文件、`pingPartner` URL、`warmCacheBadly`、`deleteUsersByRole` |
+| `service/UserService.java` | `publishTagsWithPause`、`logLookupHint` 等 **JAVA_PATCH_VERIFY** |
+| `service/User.java` / `service/ConfusingNames.java` | **JAVA_PATCH_VERIFY**：`sameName`、`waitMsBusy` |
 
-推送 PR 后看 **最终 PR 评论**：对照上表检查 `file` 与 summary 是否与助手版本一致。
-
-**Tag:** `MERGE_NORMALIZE_VERIFY`
+**Tag:** `DOC_SKIP_VERIFY`
