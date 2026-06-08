@@ -53,6 +53,10 @@
 3. **PR 评论**：只应反映 **`.java` chunk** 的合并结果；**Issues** 里 SQL/SSRF/N+1 等 **`file`** 应为对应 **`.java`**。  
 4. **Summary**：多 Java chunk 合并时，不应再出现与 **HIGH** 明显矛盾的「纯文档无问题」套话（依赖最新 `merge.py`）。
 
+## 企业闭环（Feedback / Metrics / Reflection）
+
+见仓库根目录 **`VERIFY_ENTERPRISE_LOOP.md`**（与 **ai-review-assistant** 的 `review_feedback`、`issue_comment`、可选 `REFLECTION_ENABLED` 对齐）。
+
 ## PROMPT_SQLI_ACCURACY_VERIFY（`app/prompt.py` 术语收紧）
 
 部署含 **`_SQL_INJECTION_ACCURACY`**、**`_ISSUE_LIST_HYGIENE`**、合并阶段「勿把仅日志当 SQLi」及 **去重 / 统一严重度** 规则的 **ai-review-assistant** 后，用本仓库 PR 再跑一轮 webhook，在 **`UserService.logLookupHint`** 上验收：
