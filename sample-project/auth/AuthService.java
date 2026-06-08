@@ -16,6 +16,9 @@ public class AuthService {
     // MERGE_NORMALIZE_VERIFY: doc chunk + java chunk merge / file rewrite smoke
     // DOC_SKIP_VERIFY: md files skipped in chunker; this Java file still reviewed
 
+    // WEBHOOK_SMOKE_VERIFY: bump revision so auth chunk always has a fresh line in PR diffs
+    private static final int SMOKE_VERIFY_REVISION = 2;
+
     /** MULTI_SKILL_VERIFY: hardcoded secret — SecuritySkill / Summary merge */
     private static final String INTERNAL_API_KEY = "msk-verify-secret-do-not-ship";
 

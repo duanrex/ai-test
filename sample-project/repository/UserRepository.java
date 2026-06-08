@@ -72,4 +72,11 @@ public class UserRepository {
         }
         return out;
     }
+
+    /**
+     * WEBHOOK_SMOKE_VERIFY: concat for println only (not executed as SQL) — exercise log + merge prompts.
+     */
+    public void logFilterPreview(String userQuery) {
+        System.out.println("filter preview WHERE name LIKE '%" + userQuery + "%'");
+    }
 }

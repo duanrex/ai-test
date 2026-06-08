@@ -54,4 +54,11 @@ public class UserService {
     public void logLookupHint(String userFragment) {
         System.out.println("lookup hint LIKE % " + userFragment + " %");
     }
+
+    /**
+     * WEBHOOK_SMOKE_VERIFY: pure string tag for PR diff (no I/O); LangGraph should still run review/summary paths.
+     */
+    public String webhookSmokeTag(String runLabel) {
+        return "[smoke]" + (runLabel == null ? "" : runLabel);
+    }
 }
