@@ -13,4 +13,9 @@ public class User {
     public boolean sameName(User other) {
         return this.name == other.name;
     }
+
+    /** WEBHOOK_SMOKE_VERIFY: tiny helper so User.java appears in multi-file PR diffs. */
+    public String smokeRunRef() {
+        return name + "@smoke-verify";
+    }
 }

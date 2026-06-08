@@ -16,9 +16,14 @@ public class ConfusingNames {
     }
 
     /**
+     * WEBHOOK_SMOKE_VERIFY: no-op for resolver / chunk smoke (trivial addition in PR).
+     */
+    public void smokeIdentity() {
+    }
+
+    /**
      * JAVA_PATCH_VERIFY / PROMPT_SQLI_ACCURACY_VERIFY (performance severity):
-     * Busy-spin only — no I/O in the loop. With current assistant prompts: expect <b>MEDIUM</b> (wasted CPU),
-     * not <b>HIGH</b>, unless model overstates (then tighten prompts further).
+     * Busy-spin only — no I/O in the loop. Expect MEDIUM not HIGH for wasted CPU.
      */
     public void waitMsBusy(long durationMs) {
         long end = System.currentTimeMillis() + durationMs;
