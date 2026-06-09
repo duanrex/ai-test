@@ -55,7 +55,7 @@
 
 ## 企业闭环（Feedback / Metrics / Reflection）
 
-见仓库根目录 **`VERIFY_ENTERPRISE_LOOP.md`**（与 **ai-review-assistant** 的 `review_feedback`、`issue_comment`、可选 `REFLECTION_ENABLED` 对齐）。
+见仓库根目录 **`VERIFY_ENTERPRISE_LOOP.md`**（与 **ai-review-assistant** 的 `review_feedback`、`issue_comment`、可选 `REFLECTION_ENABLED` 对齐；反馈支持 **`/ai-review-feedback TYPE #N`** 与 **短 hex 前缀**，解析需助手配置 **`GITHUB_TOKEN`**）。
 
 ## PROMPT_SQLI_ACCURACY_VERIFY（`app/prompt.py` 术语收紧）
 
